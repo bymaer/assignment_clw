@@ -1,0 +1,25 @@
+# Node.js
+node_modules/
+
+# temp files
+npm-debug.log
+yarn-error.log
+*.log
+
+# Cache
+.cache/
+
+# Build
+build/
+dist/
+
+# Config files
+.vscode/
+
+# Environment variables
+.env
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
