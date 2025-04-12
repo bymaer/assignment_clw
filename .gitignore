@@ -1,10 +1,18 @@
-# Node.js
+# Dependencies
 node_modules/
+
+# Environment variables
+.env
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
 
 # temp files
 npm-debug.log
 yarn-error.log
-*.log
 
 # Cache
 .cache/
@@ -16,10 +24,6 @@ dist/
 # Config files
 .vscode/
 
-# Environment variables
-.env
-
 # OS generated files
-.DS_Store
 Thumbs.db
 
