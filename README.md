@@ -46,74 +46,6 @@ Make sure you have the following installed on your system:
 
 ### Steps to Run Locally
 
-1. **Clone the Repository**:
-    ```bash
-    git clone https://github.com/bymaer/assignment_clw.git
-    cd simple-authentication-system
-    ```
-
-2. **Install Dependencies**:
-    For the backend:
-    ```bash
-    cd backend
-    npm install
-    ```
-    For the frontend:
-    ```bash
-    cd frontend
-    npm install
-    ```
-
-3. **Database Setup**:
-    - No additional setup required! The application uses mongodb-memory-server which creates an in-memory MongoDB instance automatically.
-    - A test user (test@example.com / Test@12345) will be created automatically on startup.
-
-4. **Run the Application**:
-    To run the backend:
-    ```bash
-    cd backend
-    npm start
-    ```
-    To run the frontend:
-    ```bash
-    cd frontend
-    npm start
-    ```
-
-5. **Access the Application**:
-    Open a browser and navigate to:
-    - Frontend: `http://localhost:5173`
-    - Backend API: `http://localhost:3001`
-
-## Usage
-
-1. **Login**: 
-   - Enter a valid email and password in the login form.
-   - If valid, you will be redirected to the welcome page.
-
-2. **Logout**: 
-   - Click the "Logout" button to log out and be redirected back to the login form.
-
-3. **Session Expiration**:
-   - After 30 minutes, the session will expire and you will be automatically logged out.
-
-## Security Considerations
-- All passwords are securely hashed before being stored in the database using bcrypt.
-- JWT tokens are used for session management and are securely stored.
-- Input is validated both client-side (React) and server-side (Node.js) to prevent security vulnerabilities such as SQL Injection, Cross-Site Scripting (XSS), and Cross-Site Request Forgery (CSRF).
-
-## Bonus Features (Optional)
-- The design is **responsive** and works on both desktop and mobile devices.
-- Includes a clean and minimal user interface with simple error handling.
-
-## Documentation
-- **Login Page**: Handles user login with basic validation for email and password.
-- **Welcome Page**: Shows a welcome message and includes a logout button.
-- **Backend API**: Manages user authentication and session management.
-- **Security**: Ensures secure handling of passwords and sessions.
-
-# Full Stack Application
-
 A project that includes React (Vite) frontend and Express.js backend.
 
 ## Running the Project
@@ -160,4 +92,31 @@ docker-compose down
 ## Development
 
 When using Docker, all code changes are automatically tracked and applied thanks to configured volumes. Hot reload is enabled for both frontend and backend.
+
+## Usage
+
+1. **Login**: 
+   - Enter a valid email and password in the login form.
+   - If valid, you will be redirected to the welcome page.
+
+2. **Logout**: 
+   - Click the "Logout" button to log out and be redirected back to the login form.
+
+3. **Session Expiration**:
+   - After 30 minutes, the session will expire and you will be automatically logged out.
+
+## Security Considerations
+- All passwords are securely hashed before being stored in the database using bcrypt.
+- JWT tokens are used for session management and are securely stored.
+- Input is validated both client-side (React) and server-side (Node.js) to prevent security vulnerabilities such as SQL Injection, Cross-Site Scripting (XSS), and Cross-Site Request Forgery (CSRF).
+
+## Bonus Features (Optional)
+- The design is **responsive** and works on both desktop and mobile devices.
+- Includes a clean and minimal user interface with simple error handling.
+
+## Documentation
+- **Login Page**: Handles user login with basic validation for email and password.
+- **Welcome Page**: Shows a welcome message and includes a logout button.
+- **Backend API**: Manages user authentication and session management.
+- **Security**: Ensures secure handling of passwords and sessions.
 
