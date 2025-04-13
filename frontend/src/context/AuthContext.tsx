@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface AuthContextType {
     token: string | null;
@@ -26,6 +26,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(null);
         setEmail(null);
     };
+
+    useEffect(() => {
+        if (token) {
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                if (Date.now() >= payload.exp * 1000) {
+                    logout();
+                }
+            } catch (error) {
+                logout();
+            }
+        }
+    }, [token]); // Зависимость только от токена
 
     return (
         <AuthContext.Provider value={{ token, email, login, logout }}>

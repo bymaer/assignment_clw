@@ -1,8 +1,33 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const User = require('../models/user.model');
+const bcrypt = require('bcryptjs');
 
 let mongoServer;
 let isConnected = false;
+
+async function createTestUser() {
+    try {
+        const testUser = {
+            email: 'test@example.com',
+            password: 'Test@12345'
+        };
+
+        const existingUser = await User.findOne({ email: testUser.email });
+        if (!existingUser) {
+            const salt = await bcrypt.genSalt(12);
+            const hashedPassword = await bcrypt.hash(testUser.password, salt);
+
+            await User.create({
+                email: testUser.email,
+                password: hashedPassword
+            });
+            console.log('Test user created successfully with email and password:', testUser.email, testUser.password);
+        }
+    } catch (error) {
+        console.error('Error creating test user:', error);
+    }
+}
 
 async function connectDB(isTest = false) {
     try {
@@ -26,9 +51,12 @@ async function connectDB(isTest = false) {
 
         mongoose.set('strictQuery', true);
 
-        mongoose.connection.on('connected', () => {
+        mongoose.connection.on('connected', async () => {
             console.log('Mongoose connected to MongoDB');
             isConnected = true;
+            if (!isTest) {
+                await createTestUser();
+            }
         });
 
         mongoose.connection.on('error', (err) => {

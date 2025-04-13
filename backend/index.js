@@ -19,8 +19,15 @@ process.on('SIGINT', async () => {
     process.exit(0);
 });
 
+// CORS configuration
+const corsOptions = {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Routes
@@ -29,7 +36,10 @@ app.use('/api', authRoutes);
 // Basic error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Something broke!');
+    res.status(500).json({
+        message: 'Internal server error',
+        error: 'SERVER_ERROR'
+    });
 });
 
 const port = process.env.PORT || 3001;

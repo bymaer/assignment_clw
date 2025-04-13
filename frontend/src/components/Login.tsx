@@ -65,6 +65,7 @@ export function Login() {
                 <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
                     Login to your account
                 </h2>
+                <p className="text-sm text-gray-400 pt-2">test@example.com / Test@12345</p>
             </div>
 
             <form onSubmit={handleSubmit} className="mt-8 space-y-6">
