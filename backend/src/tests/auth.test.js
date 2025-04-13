@@ -5,12 +5,13 @@ const app = require('../../index');
 const User = require('../models/user.model');
 
 beforeAll(async () => {
+    jest.setTimeout(10000);
     await connectDB(true);
 });
 
 afterAll(async () => {
+    await User.deleteMany({});
     await disconnectDB();
-    await new Promise(resolve => setTimeout(resolve, 500)); // Даем время на закрытие соединений
 });
 
 beforeEach(async () => {
@@ -20,7 +21,7 @@ beforeEach(async () => {
 describe('Auth API Tests', () => {
     const testUser = {
         email: 'test@example.com',
-        password: 'testPassword123'
+        password: 'Test@123456' // Корректный пароль с спецсимволом
     };
 
     describe('POST /api/register', () => {
@@ -43,7 +44,69 @@ describe('Auth API Tests', () => {
                 .send(testUser);
 
             expect(res.status).toBe(400);
-            expect(res.body.message).toBe('User already exists');
+            expect(res.body.error).toBe('USER_EXISTS');
+        });
+
+        describe('Password Validation', () => {
+            it('should not register user with password less than 8 characters', async () => {
+                const res = await request(app)
+                    .post('/api/register')
+                    .send({
+                        email: 'test@example.com',
+                        password: 'Test@12'
+                    });
+
+                expect(res.status).toBe(400);
+                expect(res.body.error).toBe('INVALID_PASSWORD');
+            });
+
+            it('should not register user with password missing uppercase letter', async () => {
+                const res = await request(app)
+                    .post('/api/register')
+                    .send({
+                        email: 'test@example.com',
+                        password: 'test@12345'
+                    });
+
+                expect(res.status).toBe(400);
+                expect(res.body.error).toBe('INVALID_PASSWORD');
+            });
+
+            it('should not register user with password missing lowercase letter', async () => {
+                const res = await request(app)
+                    .post('/api/register')
+                    .send({
+                        email: 'test@example.com',
+                        password: 'TEST@12345'
+                    });
+
+                expect(res.status).toBe(400);
+                expect(res.body.error).toBe('INVALID_PASSWORD');
+            });
+
+            it('should not register user with password missing special character', async () => {
+                const res = await request(app)
+                    .post('/api/register')
+                    .send({
+                        email: 'test@example.com',
+                        password: 'Test123456'
+                    });
+
+                expect(res.status).toBe(400);
+                expect(res.body.error).toBe('INVALID_PASSWORD');
+            });
+
+            it('should not register user with password missing number', async () => {
+                const res = await request(app)
+                    .post('/api/register')
+                    .send({
+                        email: 'test@example.com',
+                        password: 'Test@abcdef'
+                    });
+
+                expect(res.status).toBe(400);
+                expect(res.body.error).toBe('INVALID_PASSWORD');
+            });
         });
     });
 
@@ -69,11 +132,56 @@ describe('Auth API Tests', () => {
                 .post('/api/login')
                 .send({
                     email: testUser.email,
-                    password: 'wrongPassword'
+                    password: 'wrongPassword@123'
+                });
+
+            expect(res.status).toBe(401);
+            expect(res.body.error).toBe('INVALID_CREDENTIALS');
+        });
+
+        it('should not allow login with empty password', async () => {
+            const res = await request(app)
+                .post('/api/login')
+                .send({
+                    email: testUser.email,
+                    password: ''
                 });
 
             expect(res.status).toBe(400);
-            expect(res.body.message).toBe('Invalid password');
+            expect(res.body.error).toBe('MISSING_FIELDS');
+        });
+
+        it('should not allow login with empty email', async () => {
+            const res = await request(app)
+                .post('/api/login')
+                .send({
+                    email: '',
+                    password: testUser.password
+                });
+
+            expect(res.status).toBe(400);
+            expect(res.body.error).toBe('MISSING_FIELDS');
+        });
+
+        it('should lock account after 5 failed login attempts', async () => {
+            for (let i = 0; i < 5; i++) {
+                await request(app)
+                    .post('/api/login')
+                    .send({
+                        email: testUser.email,
+                        password: 'wrongPassword@123'
+                    });
+            }
+
+            const res = await request(app)
+                .post('/api/login')
+                .send({
+                    email: testUser.email,
+                    password: 'wrongPassword@123'
+                });
+
+            expect(res.status).toBe(403);
+            expect(res.body.error).toBe('ACCOUNT_LOCKED');
         });
     });
 
@@ -107,7 +215,7 @@ describe('Auth API Tests', () => {
                 .get('/api/protected');
 
             expect(res.status).toBe(401);
-            expect(res.body.message).toBe('Access denied. No token provided.');
+            expect(res.body.error).toBe('AUTH_NO_TOKEN');
         });
     });
 });

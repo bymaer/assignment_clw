@@ -8,8 +8,10 @@ const authRoutes = require('./src/routes/auth.routes');
 
 const app = express();
 
-// Connect to database
-connectDB(process.env.NODE_ENV === 'test');
+// Connect to database only if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+    connectDB();
+}
 
 // Cleanup on app termination
 process.on('SIGINT', async () => {

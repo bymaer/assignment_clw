@@ -2,9 +2,14 @@ const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
 let mongoServer;
+let isConnected = false;
 
 async function connectDB(isTest = false) {
     try {
+        if (isConnected) {
+            return;
+        }
+
         mongoServer = await MongoMemoryServer.create();
         const mongoUri = await mongoServer.getUri();
 
@@ -23,6 +28,7 @@ async function connectDB(isTest = false) {
 
         mongoose.connection.on('connected', () => {
             console.log('Mongoose connected to MongoDB');
+            isConnected = true;
         });
 
         mongoose.connection.on('error', (err) => {
@@ -34,6 +40,7 @@ async function connectDB(isTest = false) {
 
         mongoose.connection.on('disconnected', () => {
             console.log('Mongoose disconnected');
+            isConnected = false;
         });
 
         process.on('SIGINT', async () => {
@@ -53,7 +60,9 @@ async function connectDB(isTest = false) {
 
 async function disconnectDB() {
     try {
-        await mongoose.disconnect();
+        if (mongoose.connection.readyState === 1) {
+            await mongoose.disconnect();
+        }
         if (mongoServer) {
             await mongoServer.stop();
         }
