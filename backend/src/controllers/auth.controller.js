@@ -1,7 +1,7 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const validator = require('validator');
-const User = require('../models/user.model');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import validator from 'validator';
+import User from '../models/user.model.js';
 
 const validatePassword = (password) => {
     return password.length >= 8 &&
@@ -146,4 +146,4 @@ const login = async (req, res) => {
     }
 };
 
-module.exports = { register, login };
+export { register, login };

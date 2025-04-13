@@ -106,3 +106,52 @@ Make sure you have the following installed on your system:
 - **Backend API**: Manages user authentication and session management.
 - **Security**: Ensures secure handling of passwords and sessions.
 
+# Full Stack Application
+
+A project that includes React (Vite) frontend and Express.js backend.
+
+## Running the Project
+
+There are two ways to run this project:
+
+### 1. Classic Way (two terminals)
+
+#### Start the backend:
+```bash
+cd backend
+npm install
+npm run dev
+```
+Backend will be available at http://localhost:3001
+
+#### Start the frontend:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Frontend will be available at http://localhost:5173
+
+### 2. Using Docker (recommended)
+
+Prerequisites: Docker and Docker Compose installed.
+
+1. Clone the repository
+2. In the root directory, run:
+```bash
+docker-compose up
+```
+
+This will start both services:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3001
+
+To stop the services: 
+```bash
+docker-compose down
+```
+
+## Development
+
+When using Docker, all code changes are automatically tracked and applied thanks to configured volumes. Hot reload is enabled for both frontend and backend.
+

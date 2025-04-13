@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const User = require('../models/user.model');
-const bcrypt = require('bcryptjs');
+import mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import User from '../models/user.model.js';
+import bcrypt from 'bcryptjs';
 
 let mongoServer;
 let isConnected = false;
@@ -39,8 +39,6 @@ async function connectDB(isTest = false) {
         const mongoUri = await mongoServer.getUri();
 
         const mongooseOpts = {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
             maxPoolSize: 10,
             serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000,
@@ -100,4 +98,4 @@ async function disconnectDB() {
     }
 }
 
-module.exports = { connectDB, disconnectDB };
+export { connectDB, disconnectDB };

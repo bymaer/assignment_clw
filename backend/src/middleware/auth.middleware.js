@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
-const rateLimit = require('express-rate-limit');
-const { promisify } = require('util');
+import jwt from 'jsonwebtoken';
+import rateLimit from 'express-rate-limit';
+import { promisify } from 'util';
 
 const tokenBlacklist = new Set();
 
@@ -60,7 +60,7 @@ const invalidateToken = (token) => {
     tokenBlacklist.add(token);
 };
 
-module.exports = {
+export {
     authenticateToken,
     invalidateToken,
     limiter

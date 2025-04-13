@@ -1,10 +1,10 @@
-const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import 'dotenv/config';
 
-const { connectDB, disconnectDB } = require('./src/config/database');
-const authRoutes = require('./src/routes/auth.routes');
+import { connectDB, disconnectDB } from './src/config/database.js';
+import authRoutes from './src/routes/auth.routes.js';
 
 const app = express();
 
@@ -55,4 +55,4 @@ if (process.env.NODE_ENV !== 'test') {
     });
 }
 
-module.exports = app;
+export default app;
