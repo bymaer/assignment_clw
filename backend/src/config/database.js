@@ -37,13 +37,13 @@ async function connectDB(isTest = false) {
 
         let mongoUri;
 
-        // Используем in-memory MongoDB для локальной разработки через npm
+        // Use in-memory MongoDB for local development via npm
         if (process.env.NODE_ENV === 'development' && !process.env.MONGODB_URI) {
             mongod = await MongoMemoryServer.create();
             mongoUri = mongod.getUri();
             console.log('Using MongoDB Memory Server for development');
         } else {
-            // Используем обычную MongoDB для Docker или если указан MONGODB_URI
+            // Use regular MongoDB for Docker or if MONGODB_URI is specified
             mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/myapp';
             console.log('Using regular MongoDB connection');
         }

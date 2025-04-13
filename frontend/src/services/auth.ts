@@ -9,7 +9,7 @@ const api = axios.create({
     }
 });
 
-// Добавляем перехватчик для установки токена
+// Add interceptor for token setup
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');

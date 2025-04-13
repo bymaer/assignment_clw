@@ -21,7 +21,7 @@ beforeEach(async () => {
 describe('Auth API Tests', () => {
     const testUser = {
         email: 'test@example.com',
-        password: 'Test@123456' // Корректный пароль с спецсимволом
+        password: 'Test@123456' // Valid password with special character
     };
 
     describe('POST /api/register', () => {

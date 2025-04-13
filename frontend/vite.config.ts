@@ -4,9 +4,9 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true, // слушать все адреса
+    host: true, // listen on all addresses
     watch: {
-      usePolling: true // для лучшей работы в Docker
+      usePolling: true // for better performance in Docker
     }
   }
 });

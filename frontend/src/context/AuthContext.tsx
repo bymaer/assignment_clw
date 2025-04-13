@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 logout();
             }
         }
-    }, [token]); // Зависимость только от токена
+    }, [token]); // Only depends on token
 
     return (
         <AuthContext.Provider value={{ token, email, login, logout }}>
