@@ -1,7 +1,7 @@
 # Test Assignment: Simple Authentication System
 
 ## Overview
-This is a simple authentication system for a web application built with Node.js, React, MySQL, and MongoDB. The system includes the following features:
+This is a simple authentication system for a web application built with Node.js, React, and MongoDB. The system includes the following features:
 
 - User login with email and password validation
 - Token-based authentication using JWT
@@ -14,7 +14,11 @@ This project demonstrates best practices in security, session management, and re
 ## Features
 - **Login Form**: Collects the user's email and password.
   - Email validation: Ensures the email is in a valid format.
-  - Password validation: Ensures a minimum length of 6 characters.
+  - Password validation: Requires minimum 8 characters, including at least:
+    - One uppercase letter
+    - One lowercase letter
+    - One number
+    - One special character
 - **Authentication Flow**: 
   - If not logged in, the user sees the login form.
   - If logged in, the user is redirected to a welcome page showing "Hello, {email}".
@@ -28,7 +32,7 @@ This project demonstrates best practices in security, session management, and re
 ## Technologies Used
 - **Frontend**: React, CSS, HTML
 - **Backend**: Node.js, Express
-- **Databases**: MySQL, MongoDB
+- **Database**: MongoDB (in-memory server for testing/demo purposes)
 - **Authentication**: JWT (JSON Web Tokens)
 - **Security**: bcrypt for password hashing, Helmet for securing HTTP headers.
 
@@ -38,7 +42,7 @@ This project demonstrates best practices in security, session management, and re
 Make sure you have the following installed on your system:
 - **Node.js** (version >= 14)
 - **npm** (or **yarn** for package management)
-- **MySQL** and/or **MongoDB** installed and running
+- No database installation required as the project uses in-memory MongoDB for demonstration
 
 ### Steps to Run Locally
 
@@ -60,9 +64,9 @@ Make sure you have the following installed on your system:
     npm install
     ```
 
-3. **Setup Database**:
-    - Create a MySQL database and configure it with the `.env` file in the backend.
-    - Set up MongoDB for storing session information or any additional data (optional).
+3. **Database Setup**:
+    - No additional setup required! The application uses mongodb-memory-server which creates an in-memory MongoDB instance automatically.
+    - A test user (test@example.com / Test@12345) will be created automatically on startup.
 
 4. **Run the Application**:
     To run the backend:
@@ -77,7 +81,9 @@ Make sure you have the following installed on your system:
     ```
 
 5. **Access the Application**:
-    Open a browser and navigate to `http://localhost:3000` for the frontend and `http://localhost:5000` for the backend API (or whatever ports are specified in the configuration).
+    Open a browser and navigate to:
+    - Frontend: `http://localhost:5173`
+    - Backend API: `http://localhost:3001`
 
 ## Usage
 

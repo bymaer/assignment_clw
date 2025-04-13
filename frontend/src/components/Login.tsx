@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { login } from '../services/auth';
@@ -22,6 +22,13 @@ export function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const auth = useAuth();
+
+    useEffect(() => {
+        // If user is already logged in, redirect to welcome page
+        if (auth.token && auth.email) {
+            navigate('/welcome', { replace: true });
+        }
+    }, [auth.token, auth.email, navigate]);
 
     const validateEmail = (email: string) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -58,6 +65,11 @@ export function Login() {
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+
+    // Don't render the login form if user is already authenticated
+    if (auth.token && auth.email) {
+        return null;
+    }
 
     return (
         <Layout>
