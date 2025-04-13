@@ -42,17 +42,14 @@ This project demonstrates best practices in security, session management, and re
 Make sure you have the following installed on your system:
 - **Node.js** (version >= 14)
 - **npm** (or **yarn** for package management)
-- No database installation required as the project uses in-memory MongoDB for demonstration
 
 ### Steps to Run Locally
 
-A project that includes React (Vite) frontend and Express.js backend.
-
-## Running the Project
-
 There are two ways to run this project:
 
-### 1. Classic Way (two terminals)
+### 1. Classic Way (locally with npm)
+
+The project использует mongodb-memory-server, поэтому установка MongoDB не требуется для локальной разработки.
 
 #### Start the backend:
 ```bash
@@ -80,9 +77,10 @@ Prerequisites: Docker and Docker Compose installed.
 docker-compose up
 ```
 
-This will start both services:
+This will start all services:
 - Frontend: http://localhost:5173
 - Backend: http://localhost:3001
+- MongoDB: internally on port 27017 (managed by Docker)
 
 To stop the services: 
 ```bash

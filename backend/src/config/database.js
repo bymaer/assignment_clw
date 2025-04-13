@@ -3,8 +3,8 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import User from '../models/user.model.js';
 import bcrypt from 'bcryptjs';
 
-let mongoServer;
 let isConnected = false;
+let mongod = null;
 
 async function createTestUser() {
     try {
@@ -35,14 +35,18 @@ async function connectDB(isTest = false) {
             return;
         }
 
-        mongoServer = await MongoMemoryServer.create({
-            binary: {
-                version: '7.0.14',
-                systemBinary: process.env.MONGOMS_SYSTEM_BINARY
-            }
-        });
+        let mongoUri;
 
-        const mongoUri = await mongoServer.getUri();
+        // Используем in-memory MongoDB для локальной разработки через npm
+        if (process.env.NODE_ENV === 'development' && !process.env.MONGODB_URI) {
+            mongod = await MongoMemoryServer.create();
+            mongoUri = mongod.getUri();
+            console.log('Using MongoDB Memory Server for development');
+        } else {
+            // Используем обычную MongoDB для Docker или если указан MONGODB_URI
+            mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/myapp';
+            console.log('Using regular MongoDB connection');
+        }
 
         const mongooseOpts = {
             maxPoolSize: 10,
@@ -56,7 +60,7 @@ async function connectDB(isTest = false) {
         mongoose.set('strictQuery', true);
 
         mongoose.connection.on('connected', async () => {
-            console.log('Mongoose connected to MongoDB Memory Server');
+            console.log('Mongoose connected to MongoDB at:', mongoUri);
             isConnected = true;
             if (!isTest) {
                 await createTestUser();
@@ -95,8 +99,9 @@ async function disconnectDB() {
         if (mongoose.connection.readyState === 1) {
             await mongoose.disconnect();
         }
-        if (mongoServer) {
-            await mongoServer.stop();
+        if (mongod) {
+            await mongod.stop();
+            mongod = null;
         }
     } catch (err) {
         console.error('Error disconnecting from MongoDB:', err);

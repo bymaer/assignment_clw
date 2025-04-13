@@ -11,6 +11,7 @@ interface ApiError {
     response?: {
         data?: {
             message?: string;
+            error?: string;
         };
     };
 }
@@ -24,7 +25,6 @@ export function Login() {
     const auth = useAuth();
 
     useEffect(() => {
-        // If user is already logged in, redirect to welcome page
         if (auth.token && auth.email) {
             navigate('/welcome', { replace: true });
         }
@@ -35,7 +35,18 @@ export function Login() {
     };
 
     const validatePassword = (password: string) => {
-        return password.length >= 6;
+        const hasMinLength = password.length >= 8;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumbers = /[0-9]/.test(password);
+        const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
+
+        if (!hasMinLength) return 'Password must be at least 8 characters long';
+        if (!hasUpperCase) return 'Password must contain at least one uppercase letter';
+        if (!hasLowerCase) return 'Password must contain at least one lowercase letter';
+        if (!hasNumbers) return 'Password must contain at least one number';
+        if (!hasSpecialChar) return 'Password must contain at least one special character';
+        return '';
     };
 
     const handleSubmit = async (e: FormEvent) => {
@@ -47,8 +58,9 @@ export function Login() {
             return;
         }
 
-        if (!validatePassword(password)) {
-            setError('Password must be at least 6 characters long');
+        const passwordError = validatePassword(password);
+        if (passwordError) {
+            setError(passwordError);
             return;
         }
 
@@ -58,15 +70,25 @@ export function Login() {
             navigate('/welcome');
         } catch (err: unknown) {
             const apiError = err as ApiError;
-            setError(apiError.response?.data?.message || 'An error occurred during login');
+            const errorCode = apiError.response?.data?.error;
+            const errorMessage = apiError.response?.data?.message;
+
+            switch (errorCode) {
+                case 'INVALID_CREDENTIALS':
+                    setError('Invalid email or password');
+                    break;
+                case 'ACCOUNT_LOCKED':
+                    setError('Account is temporarily locked. Please try again later');
+                    break;
+                case 'MISSING_FIELDS':
+                    setError('Please fill in all fields');
+                    break;
+                default:
+                    setError(errorMessage || 'An error occurred during login');
+            }
         }
     };
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
-
-    // Don't render the login form if user is already authenticated
     if (auth.token && auth.email) {
         return null;
     }
@@ -116,7 +138,7 @@ export function Login() {
                             icon={
                                 <button
                                     type="button"
-                                    onClick={togglePasswordVisibility}
+                                    onClick={() => setShowPassword(!showPassword)}
                                     className="bg-background text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 focus:outline-none"
                                 >
                                     {showPassword ?

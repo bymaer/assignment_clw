@@ -61,6 +61,7 @@ const register = async (req, res) => {
             userId: user._id
         });
     } catch (error) {
+        console.error('Registration error:', error);
         res.status(500).json({
             message: 'Error creating user',
             error: 'SERVER_ERROR'
@@ -70,9 +71,11 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
     try {
+        console.log('Login attempt received:', { email: req.body.email });
         const { email, password } = req.body;
 
         if (!email || !password) {
+            console.log('Missing fields in login attempt');
             return res.status(400).json({
                 message: 'Email and password are required',
                 error: 'MISSING_FIELDS'
@@ -80,8 +83,11 @@ const login = async (req, res) => {
         }
 
         const sanitizedEmail = validator.normalizeEmail(email.toLowerCase().trim());
+        console.log('Looking for user with email:', sanitizedEmail);
 
         const user = await User.findOne({ email: sanitizedEmail }).select('+password');
+        console.log('User found:', user ? 'Yes' : 'No');
+
         if (!user) {
             return res.status(401).json({
                 message: 'Invalid credentials',
@@ -90,15 +96,20 @@ const login = async (req, res) => {
         }
 
         if (user.lockedUntil && user.lockedUntil > new Date()) {
+            console.log('Account is locked until:', user.lockedUntil);
             return res.status(403).json({
                 message: 'Account is temporarily locked. Try again later',
                 error: 'ACCOUNT_LOCKED'
             });
         }
 
+        console.log('Comparing passwords...');
         const validPassword = await bcrypt.compare(password, user.password);
+        console.log('Password valid:', validPassword);
+
         if (!validPassword) {
             user.loginAttempts += 1;
+            console.log('Invalid password. Login attempts:', user.loginAttempts);
 
             if (user.loginAttempts >= 5) {
                 user.lockedUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
@@ -121,6 +132,12 @@ const login = async (req, res) => {
         user.lockedUntil = null;
         await user.save();
 
+        console.log('Creating JWT token...');
+        if (!process.env.JWT_SECRET) {
+            console.error('JWT_SECRET is not defined');
+            throw new Error('JWT_SECRET is not defined');
+        }
+
         const token = jwt.sign(
             {
                 userId: user._id,
@@ -132,6 +149,7 @@ const login = async (req, res) => {
                 algorithm: 'HS256'
             }
         );
+        console.log('Token created successfully');
 
         res.json({
             message: 'Logged in successfully',
@@ -139,9 +157,11 @@ const login = async (req, res) => {
             expiresIn: 1800
         });
     } catch (error) {
+        console.error('Login error details:', error);
         res.status(500).json({
             message: 'Error logging in',
-            error: 'SERVER_ERROR'
+            error: 'SERVER_ERROR',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 };
