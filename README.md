@@ -16,47 +16,52 @@ Web application with authentication system built using Node.js, React, and Mongo
 - Authentication: JWT
 - Containerization: Docker, Docker Compose
 
-## Project Setup
+## Getting Started
 
-### Using Docker (recommended)
+### Prerequisites
+- Git
+- Docker Desktop
+- Docker Compose
 
-The application is containerized using Docker with a multi-container setup:
-- Frontend container: React application with Vite
-- Backend container: Node.js with Express
-- MongoDB container: Database service
+### Clone and Run
+1. Clone the repository
+```bash
+git clone https://github.com/your-username/authentication-system.git
+cd authentication-system
+```
 
-1. Make sure Docker and Docker Compose are installed
-2. Start the project:
+2. Start the application using Docker (recommended)
 ```bash
 docker-compose up --build
 ```
 
-Services will be available at:
+After the build completes, the services will be available at:
 - Frontend: http://localhost:5173
 - Backend: http://localhost:3001
 - MongoDB: port 27017 (inside Docker)
 
-The containers are configured with:
-- Hot-reload for development
-- Volume mapping for live code updates
-- Container networking for service communication
-- Persistent MongoDB data storage
-
-To stop services:
+To stop the application:
 ```bash
 docker-compose down
 ```
 
-### Local Development
+### Test Credentials
+You can use these credentials to test the application:
+- Email: test@example.com
+- Password: Test@12345
 
-1. Backend:
+### Development Setup (Alternative)
+
+If you prefer to run services individually:
+
+1. Backend setup:
 ```bash
 cd backend
 npm install
 npm run dev
 ```
 
-2. Frontend:
+2. Frontend setup:
 ```bash
 cd frontend
 npm install
@@ -81,9 +86,17 @@ All required variables are configured in docker-compose.yml:
 - At least 1 number
 - At least 1 special character
 
-## Security
+## Security Features
 - Password hashing (bcrypt)
 - Protection against SQL injections
 - XSS and CSRF protection
 - Client and server-side validation
+- Rate limiting on authentication endpoints
+- Account lockout after 5 failed attempts
+
+## Docker Features
+- Hot-reload for development
+- Volume mapping for live code updates
+- Container networking for service communication
+- Persistent MongoDB data storage
 
