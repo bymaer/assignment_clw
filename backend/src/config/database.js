@@ -22,7 +22,7 @@ async function createTestUser() {
                 email: testUser.email,
                 password: hashedPassword
             });
-            console.log('Test user created successfully with email and password:', testUser.email, testUser.password);
+            console.log('Test user created successfully');
         }
     } catch (error) {
         console.error('Error creating test user:', error);
@@ -35,7 +35,13 @@ async function connectDB(isTest = false) {
             return;
         }
 
-        mongoServer = await MongoMemoryServer.create();
+        mongoServer = await MongoMemoryServer.create({
+            binary: {
+                version: '7.0.14',
+                systemBinary: process.env.MONGOMS_SYSTEM_BINARY
+            }
+        });
+
         const mongoUri = await mongoServer.getUri();
 
         const mongooseOpts = {
@@ -50,7 +56,7 @@ async function connectDB(isTest = false) {
         mongoose.set('strictQuery', true);
 
         mongoose.connection.on('connected', async () => {
-            console.log('Mongoose connected to MongoDB');
+            console.log('Mongoose connected to MongoDB Memory Server');
             isConnected = true;
             if (!isTest) {
                 await createTestUser();

@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "config": {
+    "mongodbMemoryServer": {
+      "debug": "1"
+    }
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
